@@ -9,8 +9,10 @@ First you need to get a hold of this bundle. There are two ways to do this:
 Add the following to your ``composer.json`` (see http://getcomposer.org/)
 
     "require" :  {
-        "cleentfaar/package-name-here-bundle": "~0.2"
+        "cleentfaar/trigger-bundle": "dev-master"
     }
+
+**NOTE:** Once releases are available, you should replace `dev-master` with the version you want.
 
 
 ### Method b) Using submodules
@@ -32,7 +34,7 @@ Add the following two namespace entries to the `registerNamespaces` call in your
 // app/autoload.php
 $loader->registerNamespaces(array(
     // ...
-    'CL\Bundle\TriggerBundle' => __DIR__.'/../vendor/cleentfaar/package-name-here-bundle',
+    'CL\Bundle\TriggerBundle' => __DIR__.'/../vendor/cleentfaar/trigger-bundle',
     // ...
 ));
 ```
