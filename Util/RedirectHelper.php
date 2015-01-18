@@ -5,7 +5,7 @@ namespace CL\Bundle\TriggerBundle\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class RedirectHelper implements ParameterHandlerInterface
+abstract class RedirectHelper
 {
     /**
      * @param Request           $request

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace CL\Bundle\TriggerBundle\Util;
+namespace CL\Bundle\TriggerBundle\Spec;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;

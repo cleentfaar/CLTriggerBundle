@@ -2,6 +2,9 @@
 
 namespace CL\Bundle\TriggerBundle\Util;
 
+use CL\Bundle\TriggerBundle\Spec\ParameterBagHandlerInterface;
+use CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface;
+
 class ParameterHandlerRegistry
 {
     /**

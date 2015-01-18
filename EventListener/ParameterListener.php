@@ -54,7 +54,7 @@ class ParameterListener
                     if ($response !== null) {
                         $event->setResponse($response);
 
-                        break;
+                        break 2;
                     }
                 }
             }
