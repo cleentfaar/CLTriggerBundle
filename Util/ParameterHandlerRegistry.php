@@ -12,10 +12,11 @@ class ParameterHandlerRegistry
     /**
      * @var ParameterBagHandlerInterface[]
      */
-    private $bagHandlers= [];
+    private $bagHandlers = [];
 
     /**
      * @param ParameterHandlerInterface $handler
+     * @param string                    $parameter
      */
     public function registerParameter(ParameterHandlerInterface $handler, $parameter)
     {

@@ -13,7 +13,13 @@ class RegisterParameterHandlersPass implements CompilerPassInterface
         $definition = $container->getDefinition('cl_trigger.util.parameter_handler_registry');
 
         foreach ($container->findTaggedServiceIds('cl_trigger.parameter_handler') as $id => $tags) {
-            $definition->addMethodCall('register', [new Reference($id)]);
+            foreach ($tags as $tagAttributes) {
+                if (isset($tagAttributes['parameter'])) {
+                    $definition->addMethodCall('registerParameter', [new Reference($id), $tagAttributes['parameter']]);
+                } else {
+                    $definition->addMethodCall('registerParameterBag', [new Reference($id)]);
+                }
+            }
         }
     }
 }
