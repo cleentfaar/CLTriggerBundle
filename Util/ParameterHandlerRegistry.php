@@ -47,7 +47,7 @@ class ParameterHandlerRegistry
     /**
      * @return ParameterBagHandlerInterface[]
      */
-    public function getBagHandlers()
+    public function getParameterBagHandlers()
     {
         return $this->bagHandlers;
     }

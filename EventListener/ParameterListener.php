@@ -36,7 +36,7 @@ class ParameterListener
             return;
         }
 
-        foreach ($this->parameterHandlerRegistry->getBagHandlers() as $handler) {
+        foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
             $response = $handler->onQuery($request->query, $event->getRequest());
 
             if ($response !== null) {
