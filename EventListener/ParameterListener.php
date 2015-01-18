@@ -37,7 +37,7 @@ class ParameterListener
         }
 
         foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
-            $response = $handler->onQuery($request->query, $event->getRequest());
+            $response = $handler->onTrigger($request->query, $event->getRequest());
 
             if ($response !== null) {
                 $event->setResponse($response);
@@ -49,7 +49,7 @@ class ParameterListener
         if ($response === null) {
             foreach ($request->query->all() as $key => $value) {
                 foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
-                    $response = $handler->onParameter($key, $value, $event->getRequest());
+                    $response = $handler->onTrigger($value, $event->getRequest(), $key);
 
                     if ($response !== null) {
                         $event->setResponse($response);

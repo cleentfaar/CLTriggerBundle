@@ -8,11 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 interface ParameterHandlerInterface
 {
     /**
-     * @param string  $parameter
      * @param mixed   $value
      * @param Request $request
+     * @param string  $triggeredParameter
      *
      * @return Response|null
      */
-    public function onParameter($parameter, $value, Request $request);
+    public function onTrigger($value, Request $request, $triggeredParameter);
 }

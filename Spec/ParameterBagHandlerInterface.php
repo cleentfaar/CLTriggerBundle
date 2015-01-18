@@ -14,5 +14,5 @@ interface ParameterBagHandlerInterface
      *
      * @return Response|null
      */
-    public function onQuery(ParameterBag $query, Request $request);
+    public function onTrigger(ParameterBag $query, Request $request);
 }

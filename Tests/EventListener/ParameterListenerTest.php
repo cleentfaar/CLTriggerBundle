@@ -94,7 +94,7 @@ class ParameterListenerTest extends WebTestCase
         $parameterHandlerMock = $this->getMock('CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface');
 
         if ($redirectUrl !== null) {
-            $parameterHandlerMock->expects($this->any())->method('onParameter')->willReturn(new RedirectResponse($redirectUrl));
+            $parameterHandlerMock->expects($this->any())->method('onTrigger')->willReturn(new RedirectResponse($redirectUrl));
         }
 
         $this->parameterHandlerRegistry->registerParameterHandler($parameterHandlerMock, 'foo');
