@@ -4,46 +4,42 @@ namespace CL\Bundle\TriggerBundle\Util;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 abstract class AbstractParameterHandler implements ParameterHandlerInterface
 {
     /**
-     * @var Request|null
-     */
-    protected $request;
-
-    /**
-     * @param Request $request
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @param array|null $withoutParameter
+     * @param Request           $request
+     * @param array|string|null $withoutParameters
      *
      * @return RedirectResponse
      */
-    protected function createRedirect(array $withoutParameter = [])
+    protected function createRedirect(Request $request, $withoutParameters = null)
     {
-        $redirect = new RedirectResponse($this->getUrl($withoutParameter));
+        if ($withoutParameters === null) {
+            $withoutParameters = [];
+        } elseif (!is_array($withoutParameters)) {
+            $withoutParameters = [$withoutParameters];
+        }
+
+        $redirect = new RedirectResponse($this->getUrl($request, $withoutParameters));
 
         return $redirect;
     }
 
     /**
-     * @param array $stripParameters
+     * @param Request $request
+     * @param array   $stripParameters
      *
      * @return string
      */
-    protected function getUrl(array $stripParameters = [])
+    protected function getUrl(Request $request, array $stripParameters = [])
     {
-        $path     = ltrim($this->request->getPathInfo(), '/');
-        $host     = $this->request->getHttpHost();
-        $scheme   = $this->request->getScheme();
+        $path   = ltrim($request->getPathInfo(), '/');
+        $host   = $request->getHttpHost();
+        $scheme = $request->getScheme();
 
-        $queryBag = clone($this->request->query);
+        $queryBag = clone($request->query);
 
         foreach ($stripParameters as $parameter) {
             $queryBag->remove($parameter);

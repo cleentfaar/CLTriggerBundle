@@ -7,21 +7,42 @@ class ParameterHandlerRegistry
     /**
      * @var ParameterHandlerInterface[]
      */
-    private $handlers = [];
+    private $parameterHandlers = [];
+
+    /**
+     * @var ParameterBagHandlerInterface[]
+     */
+    private $bagHandlers= [];
 
     /**
      * @param ParameterHandlerInterface $handler
      */
-    public function register(ParameterHandlerInterface $handler)
+    public function registerParameter(ParameterHandlerInterface $handler, $parameter)
     {
-        $this->handlers[] = $handler;
+        $this->parameterHandlers[$parameter] = $handler;
+    }
+
+    /**
+     * @param ParameterHandlerInterface $handler
+     */
+    public function registerParameterBag(ParameterHandlerInterface $handler)
+    {
+        $this->bagHandlers[] = $handler;
     }
 
     /**
      * @return ParameterHandlerInterface[]
      */
-    public function all()
+    public function getParameterHandlers()
     {
-        return $this->handlers;
+        return $this->parameterHandlers;
+    }
+
+    /**
+     * @return ParameterBagHandlerInterface[]
+     */
+    public function getBagHandlers()
+    {
+        return $this->bagHandlers;
     }
 }
