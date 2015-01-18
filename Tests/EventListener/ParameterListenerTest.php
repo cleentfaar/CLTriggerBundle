@@ -32,22 +32,22 @@ class ParameterListenerTest extends WebTestCase
         $this->parameterListener        = new ParameterListener($this->parameterHandlerRegistry);
     }
 
-    public function testOnKernelRequestWithSubRequest()
+    public function testOnRequestWithSubRequest()
     {
         $event = $this->createGetResponseEvent([], HttpKernel::SUB_REQUEST);
 
-        $this->parameterListener->onKernelRequest($event);
+        $this->parameterListener->onRequest($event);
 
         $this->assertNull($event->getResponse());
     }
 
-    public function testOnKernelRequestWithMatchingParameterHandler()
+    public function testOnRequestWithMatchingParameterHandler()
     {
         $this->createParameterHandlerMock('foo', self::BASE_URI);
 
         $event = $this->createGetResponseEvent(['foo' => 'bar']);
 
-        $this->parameterListener->onKernelRequest($event);
+        $this->parameterListener->onRequest($event);
 
         /** @var RedirectResponse $response */
         $response = $event->getResponse();
@@ -56,27 +56,27 @@ class ParameterListenerTest extends WebTestCase
         $this->assertEquals(self::BASE_URI, $response->getTargetUrl());
     }
 
-    public function testOnKernelRequestWithoutMatchingParameterHandler()
+    public function testOnRequestWithoutMatchingParameterHandler()
     {
         $this->createParameterHandlerMock('foo', self::BASE_URI);
 
         $event = $this->createGetResponseEvent(['apple' => 'pie']);
 
-        $this->parameterListener->onKernelRequest($event);
+        $this->parameterListener->onRequest($event);
 
         $response = $event->getResponse();
 
         $this->assertNull($response);
     }
 
-    public function testOnKernelRequestWithMultipleMatchingParameterHandlers()
+    public function testOnRequestWithMultipleMatchingParameterHandlers()
     {
         $this->createParameterHandlerMock('foo', self::BASE_URI . '?apple=pie');
         $this->createParameterHandlerMock('apple', self::BASE_URI . '?foo=bar');
 
         $event = $this->createGetResponseEvent(['foo' => 'bar', 'apple' => 'pie']);
 
-        $this->parameterListener->onKernelRequest($event);
+        $this->parameterListener->onRequest($event);
 
         /** @var RedirectResponse $response */
         $response = $event->getResponse();

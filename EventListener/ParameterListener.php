@@ -23,7 +23,7 @@ class ParameterListener
     /**
      * @param GetResponseEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
             return;
@@ -36,7 +36,7 @@ class ParameterListener
             return;
         }
 
-        $this->tryBagHandlers($event);
+        $this->tryParameterBagHandlers($event);
 
         if ($event->getResponse() === null) {
             $this->tryParameterHandlers($event);
@@ -50,7 +50,7 @@ class ParameterListener
     /**
      * @param GetResponseEvent $event
      */
-    private function tryBagHandlers(GetResponseEvent $event)
+    private function tryParameterBagHandlers(GetResponseEvent $event)
     {
         foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
             $response = $handler->onTrigger($event->getRequest()->query, $event->getRequest());

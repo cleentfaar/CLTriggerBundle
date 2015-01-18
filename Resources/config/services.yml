@@ -11,4 +11,4 @@ services:
     arguments:
       - @cl_trigger.util.parameter_handler_registry
     tags:
-      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+      - { name: kernel.event_listener, event: kernel.request, method: onRequest }
