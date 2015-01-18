@@ -8,7 +8,7 @@ use CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface;
 class ParameterHandlerRegistry
 {
     /**
-     * @var ParameterHandlerInterface[]
+     * @var [ParameterHandlerInterface[]]
      */
     private $parameterHandlers = [];
 
