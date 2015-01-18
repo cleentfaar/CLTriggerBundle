@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ParameterListenerTest extends WebTestCase
 {
@@ -109,8 +110,10 @@ class ParameterListenerTest extends WebTestCase
      */
     private function createGetResponseEvent(array $query = [], $requestType = HttpKernel::MASTER_REQUEST)
     {
+        /** @var HttpKernelInterface|\PHPUnit_Framework_MockObject_MockObject $kernel */
+        $kernel  = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
         $request = Request::create(self::BASE_URI, 'GET', $query);
-        $event   = new GetResponseEvent($this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface'), $request, $requestType);
+        $event   = new GetResponseEvent($kernel, $request, $requestType);
 
         return $event;
     }
