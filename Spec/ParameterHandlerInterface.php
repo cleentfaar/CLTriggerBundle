@@ -1,6 +1,5 @@
 <?php
 
-
 namespace CL\Bundle\TriggerBundle\Spec;
 
 use Symfony\Component\HttpFoundation\Request;
