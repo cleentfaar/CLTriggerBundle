@@ -12,11 +12,11 @@ class RedirectHelperTest extends \PHPUnit_Framework_TestCase
     {
     }
 
-    public function testCreateFromRequest()
+    public function testCreateFromRequestWithParameters()
     {
         $expectedQuery = ['foo' => 'bar'];
         $request       = Request::create('/test', 'GET', $expectedQuery);
-        $redirect      = RedirectHelper::createFromRequest($request, ['apple']);
+        $redirect      = RedirectHelper::createFromRequest($request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
 
