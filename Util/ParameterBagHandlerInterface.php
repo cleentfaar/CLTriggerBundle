@@ -4,15 +4,16 @@
 namespace CL\Bundle\TriggerBundle\Util;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 interface ParameterBagHandlerInterface
 {
     /**
      * @param ParameterBag $query
+     * @param Request      $request
      *
      * @return Response|null
      */
-    public function onQuery(ParameterBag $query, GetResponseEvent $event);
+    public function onQuery(ParameterBag $query, Request $request);
 }
