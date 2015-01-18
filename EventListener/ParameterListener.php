@@ -36,8 +36,24 @@ class ParameterListener
             return;
         }
 
+        $this->tryBagHandlers($event);
+
+        if ($event->getResponse() === null) {
+            $this->tryParameterHandlers($event);
+        }
+
+        if ($event->getResponse()) {
+            $event->stopPropagation();
+        }
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     */
+    private function tryBagHandlers(GetResponseEvent $event)
+    {
         foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
-            $response = $handler->onTrigger($request->query, $event->getRequest());
+            $response = $handler->onTrigger($event->getRequest()->query, $event->getRequest());
 
             if ($response !== null) {
                 $event->setResponse($response);
@@ -45,23 +61,23 @@ class ParameterListener
                 break;
             }
         }
+    }
 
-        if ($response === null) {
-            foreach ($request->query->all() as $key => $value) {
-                foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
-                    $response = $handler->onTrigger($value, $event->getRequest(), $key);
+    /**
+     * @param GetResponseEvent $event
+     */
+    private function tryParameterHandlers(GetResponseEvent $event)
+    {
+        foreach ($event->getRequest()->query->all() as $key => $value) {
+            foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
+                $response = $handler->onTrigger($value, $event->getRequest(), $key);
 
-                    if ($response !== null) {
-                        $event->setResponse($response);
+                if ($response !== null) {
+                    $event->setResponse($response);
 
-                        break 2;
-                    }
+                    break 2;
                 }
             }
-        }
-
-        if ($event->getResponse()) {
-            $event->stopPropagation();
         }
     }
 }
