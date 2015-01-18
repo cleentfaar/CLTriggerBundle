@@ -7,13 +7,12 @@ use Matthias\SymfonyConfigTest\PhpUnit\AbstractConfigurationTestCase;
 
 class ConfigurationTest extends AbstractConfigurationTestCase
 {
-    public function testValuesAreInvalidIfRequiredValueIsNotProvided()
+    public function testValuesAreValidIfNoValuesProvided()
     {
-        $this->assertConfigurationIsInvalid(
+        $this->assertConfigurationIsValid(
             [
                 [] // no values at all
-            ],
-            'foo' // (part of) the expected exception message - optional
+            ]
         );
     }
 
