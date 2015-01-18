@@ -3,6 +3,7 @@
 namespace CL\Bundle\TriggerBundle\Tests\EventListener;
 
 use CL\Bundle\TriggerBundle\EventListener\ParameterListener;
+use CL\Bundle\TriggerBundle\Spec\ParameterBagHandlerInterface;
 use CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface;
 use CL\Bundle\TriggerBundle\Util\ParameterHandlerRegistry;
 use Symfony\Bundle\FrameworkBundle\Tests\Functional\WebTestCase;
@@ -34,11 +35,24 @@ class ParameterListenerTest extends WebTestCase
 
     public function testOnRequestWithSubRequest()
     {
-        $event = $this->createGetResponseEvent([], HttpKernel::SUB_REQUEST);
+        $event = $this->createGetResponseEvent([], Request::METHOD_GET, HttpKernel::SUB_REQUEST);
 
         $this->parameterListener->onRequest($event);
 
         $this->assertNull($event->getResponse());
+    }
+
+    public function testOnRequestWithNonGetMethod()
+    {
+        $this->createParameterHandlerMock('foo', self::BASE_URI);
+
+        $event = $this->createGetResponseEvent([], Request::METHOD_POST);
+
+        $this->parameterListener->onRequest($event);
+
+        $response = $event->getResponse();
+
+        $this->assertNull($response);
     }
 
     public function testOnRequestWithMatchingParameterHandler()
@@ -61,6 +75,34 @@ class ParameterListenerTest extends WebTestCase
         $this->createParameterHandlerMock('foo', self::BASE_URI);
 
         $event = $this->createGetResponseEvent(['apple' => 'pie']);
+
+        $this->parameterListener->onRequest($event);
+
+        $response = $event->getResponse();
+
+        $this->assertNull($response);
+    }
+
+    public function testOnRequestWithMatchingParameterBagHandler()
+    {
+        $this->createParameterBagHandlerMock(self::BASE_URI);
+
+        $event = $this->createGetResponseEvent(['foo' => 'bar']);
+
+        $this->parameterListener->onRequest($event);
+
+        /** @var RedirectResponse $response */
+        $response = $event->getResponse();
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
+        $this->assertEquals(self::BASE_URI, $response->getTargetUrl());
+    }
+
+    public function testOnRequestWithoutMatchingParameterBagHandler()
+    {
+        $this->createParameterBagHandlerMock(self::BASE_URI);
+
+        $event = $this->createGetResponseEvent([], Request::METHOD_POST);
 
         $this->parameterListener->onRequest($event);
 
@@ -103,16 +145,33 @@ class ParameterListenerTest extends WebTestCase
     }
 
     /**
-     * @param array $query
-     * @param int   $requestType
+     * @return ParameterBagHandlerInterface|\PHPUnit_Framework_MockObject_MockObject $parameterHandlerMock
+     */
+    private function createParameterBagHandlerMock($redirectUrl = null)
+    {
+        /** @var ParameterBagHandlerInterface|\PHPUnit_Framework_MockObject_MockObject $parameterBagHandlerMock */
+        $parameterBagHandlerMock = $this->getMock('CL\Bundle\TriggerBundle\Spec\ParameterBagHandlerInterface');
+
+        if ($redirectUrl !== null) {
+            $parameterBagHandlerMock->expects($this->any())->method('onTrigger')->willReturn(new RedirectResponse($redirectUrl));
+        }
+
+        $this->parameterHandlerRegistry->registerParameterBagHandler($parameterBagHandlerMock);
+
+        return $parameterBagHandlerMock;
+    }
+
+    /**
+     * @param array  $query
+     * @param string $method
      *
      * @return GetResponseEvent
      */
-    private function createGetResponseEvent(array $query = [], $requestType = HttpKernel::MASTER_REQUEST)
+    private function createGetResponseEvent(array $query = [], $method = Request::METHOD_GET, $requestType = HttpKernel::MASTER_REQUEST)
     {
         /** @var HttpKernelInterface|\PHPUnit_Framework_MockObject_MockObject $kernel */
         $kernel  = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
-        $request = Request::create(self::BASE_URI, 'GET', $query);
+        $request = Request::create(self::BASE_URI, $method, $query);
         $event   = new GetResponseEvent($kernel, $request, $requestType);
 
         return $event;
