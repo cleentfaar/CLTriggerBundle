@@ -128,7 +128,10 @@ class ParameterListenerTest extends WebTestCase
     }
 
     /**
-     * @return ParameterHandlerInterface|\PHPUnit_Framework_MockObject_MockObject $parameterHandlerMock
+     * @param string      $parameter
+     * @param string|null $redirectUrl
+     *
+     * @return ParameterHandlerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     private function createParameterHandlerMock($parameter, $redirectUrl = null)
     {
@@ -139,7 +142,7 @@ class ParameterListenerTest extends WebTestCase
             $parameterHandlerMock->expects($this->any())->method('onTrigger')->willReturn(new RedirectResponse($redirectUrl));
         }
 
-        $this->parameterHandlerRegistry->registerParameterHandler($parameterHandlerMock, 'foo');
+        $this->parameterHandlerRegistry->registerParameterHandler($parameterHandlerMock, $parameter);
 
         return $parameterHandlerMock;
     }

@@ -8,11 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RedirectHelperTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-    }
-
-    public function testCreateFromRequestWithParameters()
+    public function testCreateFromRequest()
     {
         $expectedQuery = ['foo' => 'bar'];
         $request       = Request::create('/test', 'GET', $expectedQuery);
@@ -26,11 +22,27 @@ class RedirectHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $actualQuery['foo']);
     }
 
-    public function testCreateFromRequestWithoutParameters()
+    public function testCreateFromRequestStripped()
     {
         $expectedQuery = ['foo' => 'bar', 'apple' => 'pie'];
         $request       = Request::create('/test', 'GET', $expectedQuery);
         $redirect      = RedirectHelper::createFromRequest($request, ['apple']);
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
+
+        $actualQuery = $this->getQueryFromRedirect($redirect);
+
+        $this->assertArrayHasKey('foo', $actualQuery);
+        $this->assertEquals('bar', $actualQuery['foo']);
+
+        $this->assertArrayNotHasKey('apple', $actualQuery);
+    }
+
+    public function testCreateFromRequestStrippedWithString()
+    {
+        $expectedQuery = ['foo' => 'bar', 'apple' => 'pie'];
+        $request       = Request::create('/test', 'GET', $expectedQuery);
+        $redirect      = RedirectHelper::createFromRequest($request, 'apple');
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
 
