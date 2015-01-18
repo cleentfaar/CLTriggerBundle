@@ -21,7 +21,7 @@ class ParameterHandlerRegistry
      * @param ParameterHandlerInterface $handler
      * @param string                    $parameter
      */
-    public function registerParameter(ParameterHandlerInterface $handler, $parameter)
+    public function registerParameterHandler(ParameterHandlerInterface $handler, $parameter)
     {
         $this->parameterHandlers[$parameter][] = $handler;
     }
@@ -29,7 +29,7 @@ class ParameterHandlerRegistry
     /**
      * @param ParameterHandlerInterface $handler
      */
-    public function registerParameterBag(ParameterHandlerInterface $handler)
+    public function registerParameterBagHandler(ParameterHandlerInterface $handler)
     {
         $this->bagHandlers[] = $handler;
     }
