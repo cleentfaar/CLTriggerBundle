@@ -20,7 +20,7 @@ class ParameterHandlerRegistry
      */
     public function registerParameter(ParameterHandlerInterface $handler, $parameter)
     {
-        $this->parameterHandlers[$parameter] = $handler;
+        $this->parameterHandlers[$parameter][] = $handler;
     }
 
     /**
@@ -32,11 +32,13 @@ class ParameterHandlerRegistry
     }
 
     /**
+     * @param string $parameter
+     *
      * @return ParameterHandlerInterface[]
      */
-    public function getParameterHandlers()
+    public function getParameterHandlers($parameter)
     {
-        return $this->parameterHandlers;
+        return array_key_exists($parameter, $this->parameterHandlers) ? $this->parameterHandlers[$parameter] : [];
     }
 
     /**

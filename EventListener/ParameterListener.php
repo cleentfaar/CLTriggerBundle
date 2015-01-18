@@ -47,8 +47,8 @@ class ParameterListener
         }
 
         if ($response === null) {
-            foreach ($this->parameterHandlerRegistry->getParameterHandlers() as $handler) {
-                foreach ($request->query->all() as $key => $value) {
+            foreach ($request->query->all() as $key => $value) {
+                foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
                     $response = $handler->onParameter($key, $value, $event->getRequest());
 
                     if ($response !== null) {
