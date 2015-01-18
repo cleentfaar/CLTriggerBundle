@@ -2,7 +2,7 @@
 
 namespace CL\Bundle\TriggerBundle\Tests;
 
-use CL\Bundle\TriggerBundle\DependencyInjection\CLPackageNameExtension;
+use CL\Bundle\TriggerBundle\DependencyInjection\CLTriggerExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
 class ExtensionTest extends AbstractExtensionTestCase
@@ -23,7 +23,7 @@ class ExtensionTest extends AbstractExtensionTestCase
     protected function getContainerExtensions()
     {
         return array(
-            new CLPackageNameExtension()
+            new CLTriggerExtension()
         );
     }
 }
