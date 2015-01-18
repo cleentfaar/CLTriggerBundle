@@ -27,6 +27,5 @@
   },
   "config": {
     "bin-dir": "bin"
-  },
-  "target-dir": "CL/Bundle/TriggerBundle"
+  }
 }
