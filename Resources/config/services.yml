@@ -1,0 +1,15 @@
+parameters:
+  cl_trigger.listener.parameter.class: CL\Bundle\TriggerBundle\EventListener\ParameterListener
+  cl_trigger.demo.parameter_handler.class: CL\Bundle\TriggerBundle\Util\DemoParameterHandler
+  cl_trigger.util.parameter_handler_registry.class: CL\Bundle\TriggerBundle\Util\ParameterHandlerRegistry
+
+services:
+  cl_trigger.util.parameter_handler_registry:
+    class: %cl_trigger.util.parameter_handler_registry.class%
+
+  cl_trigger.listener.parameter:
+    class: %cl_trigger.listener.parameter.class%
+    arguments:
+      - @cl_trigger.util.parameter_handler_registry
+    tags:
+      - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
