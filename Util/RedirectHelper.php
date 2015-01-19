@@ -15,16 +15,16 @@ class RedirectHelper
     /**
      * @var array|null
      */
-    private $parameters;
+    private $strippableParameters;
 
     /**
      * @param Request $request
-     * @param array   $parameters
+     * @param array   $strippableParameters
      */
-    public function __construct(Request $request, array $parameters = [])
+    public function __construct(Request $request, array $strippableParameters = [])
     {
-        $this->request    = $request;
-        $this->parameters = $parameters;
+        $this->request              = $request;
+        $this->strippableParameters = $strippableParameters;
     }
 
     /**
@@ -34,37 +34,30 @@ class RedirectHelper
      */
     public function create($withoutParameters = true)
     {
-        if ($withoutParameters === false) {
-            $withoutParameters = [];
-        } else {
-            $withoutParameters = $this->parameters;
-        }
-
-        $redirect = new RedirectResponse($this->getUrl($this->request, $withoutParameters));
+        $redirect = new RedirectResponse($this->getUrl($withoutParameters));
 
         return $redirect;
     }
 
     /**
-     * @param Request $request
-     * @param array   $stripParameters
+     * @param bool $withoutParameters
      *
      * @return string
      */
-    private function getUrl(Request $request, array $stripParameters = [])
+    private function getUrl($withoutParameters = true)
     {
-        $path   = ltrim($request->getPathInfo(), '/');
-        $host   = $request->getHttpHost();
-        $scheme = $request->getScheme();
+        $path     = ltrim($this->request->getPathInfo(), '/');
+        $host     = $this->request->getHttpHost();
+        $scheme   = $this->request->getScheme();
+        $queryBag = clone($this->request->query);
 
-        $queryBag = clone($request->query);
-
-        foreach ($stripParameters as $parameter) {
-            $queryBag->remove($parameter);
+        if ($withoutParameters === true) {
+            foreach ($this->strippableParameters as $parameter) {
+                $queryBag->remove($parameter);
+            }
         }
 
-        $query = http_build_query($queryBag->all());
-
+        $query       = http_build_query($queryBag->all());
         $redirectUrl = sprintf('%s://%s/%s?%s', $scheme, $host, $path, $query);
         $redirectUrl = rtrim($redirectUrl, '?');
 
