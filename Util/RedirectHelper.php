@@ -5,23 +5,42 @@ namespace CL\Bundle\TriggerBundle\Util;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class RedirectHelper
+class RedirectHelper
 {
     /**
-     * @param Request           $request
-     * @param array|string|null $withoutParameters
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var array|null
+     */
+    private $parameters;
+
+    /**
+     * @param Request $request
+     * @param array   $parameters
+     */
+    public function __construct(Request $request, array $parameters = [])
+    {
+        $this->request    = $request;
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * @param bool $withoutParameters
      *
      * @return RedirectResponse
      */
-    public static function createFromRequest(Request $request, $withoutParameters = null)
+    public function create($withoutParameters = true)
     {
-        if ($withoutParameters === null) {
+        if ($withoutParameters === false) {
             $withoutParameters = [];
-        } elseif (!is_array($withoutParameters)) {
-            $withoutParameters = [$withoutParameters];
+        } else {
+            $withoutParameters = $this->parameters;
         }
 
-        $redirect = new RedirectResponse(self::getUrl($request, $withoutParameters));
+        $redirect = new RedirectResponse($this->getUrl($this->request, $withoutParameters));
 
         return $redirect;
     }
@@ -32,7 +51,7 @@ abstract class RedirectHelper
      *
      * @return string
      */
-    private static function getUrl(Request $request, array $stripParameters = [])
+    private function getUrl(Request $request, array $stripParameters = [])
     {
         $path   = ltrim($request->getPathInfo(), '/');
         $host   = $request->getHttpHost();

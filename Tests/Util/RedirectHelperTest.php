@@ -10,9 +10,7 @@ class RedirectHelperTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateFromRequest()
     {
-        $expectedQuery = ['foo' => 'bar'];
-        $request       = Request::create('/test', 'GET', $expectedQuery);
-        $redirect      = RedirectHelper::createFromRequest($request);
+        $redirect = $this->createRedirect(['foo' => 'bar']);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
 
@@ -24,12 +22,7 @@ class RedirectHelperTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFromRequestStripped()
     {
-        $expectedQuery = ['foo' => 'bar', 'apple' => 'pie'];
-        $request       = Request::create('/test', 'GET', $expectedQuery);
-        $redirect      = RedirectHelper::createFromRequest($request, ['apple']);
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
-
+        $redirect    = $this->createRedirect(['foo' => 'bar', 'apple' => 'pie'], ['apple']);
         $actualQuery = $this->getQueryFromRedirect($redirect);
 
         $this->assertArrayHasKey('foo', $actualQuery);
@@ -38,20 +31,21 @@ class RedirectHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('apple', $actualQuery);
     }
 
-    public function testCreateFromRequestStrippedWithString()
+    /**
+     * @param array $expectedQuery
+     * @param array $withoutParameters
+     *
+     * @return RedirectResponse
+     */
+    private function createRedirect(array $expectedQuery, array $withoutParameters = [])
     {
-        $expectedQuery = ['foo' => 'bar', 'apple' => 'pie'];
-        $request       = Request::create('/test', 'GET', $expectedQuery);
-        $redirect      = RedirectHelper::createFromRequest($request, 'apple');
+        $request        = Request::create('/test', 'GET', $expectedQuery);
+        $redirectHelper = new RedirectHelper($request, $withoutParameters);
+        $redirect       = $redirectHelper->create(true);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
 
-        $actualQuery = $this->getQueryFromRedirect($redirect);
-
-        $this->assertArrayHasKey('foo', $actualQuery);
-        $this->assertEquals('bar', $actualQuery['foo']);
-
-        $this->assertArrayNotHasKey('apple', $actualQuery);
+        return $redirect;
     }
 
     /**

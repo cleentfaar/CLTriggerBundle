@@ -2,17 +2,16 @@
 
 namespace CL\Bundle\TriggerBundle\Spec;
 
-use Symfony\Component\HttpFoundation\Request;
+use CL\Bundle\TriggerBundle\Util\RedirectHelper;
 use Symfony\Component\HttpFoundation\Response;
 
 interface ParameterHandlerInterface
 {
     /**
-     * @param mixed   $value
-     * @param Request $request
-     * @param string  $triggeredParameter
+     * @param mixed          $value
+     * @param RedirectHelper $redirectHelper
      *
      * @return Response|null
      */
-    public function onTrigger($value, Request $request, $triggeredParameter);
+    public function onTrigger($value, RedirectHelper $redirectHelper);
 }

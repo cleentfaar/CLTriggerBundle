@@ -3,6 +3,8 @@
 namespace CL\Bundle\TriggerBundle\EventListener;
 
 use CL\Bundle\TriggerBundle\Util\ParameterHandlerRegistry;
+use CL\Bundle\TriggerBundle\Util\RedirectHelper;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\RequestHelper;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class ParameterListener
@@ -53,7 +55,8 @@ class ParameterListener
     private function tryParameterBagHandlers(GetResponseEvent $event)
     {
         foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
-            $response = $handler->onTrigger($event->getRequest()->query, $event->getRequest());
+            $redirectHelper = new RedirectHelper($event->getRequest());
+            $response       = $handler->onTrigger($event->getRequest()->query, $redirectHelper);
 
             if ($response !== null) {
                 $event->setResponse($response);
@@ -70,7 +73,8 @@ class ParameterListener
     {
         foreach ($event->getRequest()->query->all() as $key => $value) {
             foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
-                $response = $handler->onTrigger($value, $event->getRequest(), $key);
+                $redirectHelper = new RedirectHelper($event->getRequest(), [$key]);
+                $response       = $handler->onTrigger($value, $redirectHelper);
 
                 if ($response !== null) {
                     $event->setResponse($response);
