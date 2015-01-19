@@ -41,7 +41,7 @@ class RedirectHelperTest extends \PHPUnit_Framework_TestCase
     {
         $request        = Request::create('/test', 'GET', $expectedQuery);
         $redirectHelper = new RedirectHelper($request, $withoutParameters);
-        $redirect       = $redirectHelper->create(true);
+        $redirect       = $redirectHelper->create();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
 

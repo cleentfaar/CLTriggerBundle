@@ -13,48 +13,51 @@ class RedirectHelper
     private $request;
 
     /**
-     * @var array|null
+     * @var array
      */
-    private $strippableParameters;
+    private $parametersToStrip;
 
     /**
      * @param Request $request
-     * @param array   $strippableParameters
+     * @param array   $parametersToStrip
      */
-    public function __construct(Request $request, array $strippableParameters = [])
+    public function __construct(Request $request, array $parametersToStrip = [])
     {
-        $this->request              = $request;
-        $this->strippableParameters = $strippableParameters;
+        $this->request           = $request;
+        $this->parametersToStrip = $parametersToStrip;
     }
 
     /**
-     * @param bool $withoutParameters
+     * @param array|null $parametersToStrip The parameters to strip from the redirect URL,
+     *                                      leave null to strip parameter(s) configured during construction
      *
      * @return RedirectResponse
      */
-    public function create($withoutParameters = true)
+    public function create(array $parametersToStrip = null)
     {
-        $redirect = new RedirectResponse($this->getUrl($withoutParameters));
+        if ($parametersToStrip === null) {
+            $parametersToStrip = $this->parametersToStrip;
+        }
+
+        $redirect = new RedirectResponse($this->getUrl($parametersToStrip));
 
         return $redirect;
     }
 
     /**
-     * @param bool $withoutParameters
+     * @param array $parametersToStrip
      *
      * @return string
      */
-    private function getUrl($withoutParameters = true)
+    private function getUrl(array $parametersToStrip = [])
     {
         $path     = ltrim($this->request->getPathInfo(), '/');
         $host     = $this->request->getHttpHost();
         $scheme   = $this->request->getScheme();
         $queryBag = clone($this->request->query);
 
-        if ($withoutParameters === true) {
-            foreach ($this->strippableParameters as $parameter) {
-                $queryBag->remove($parameter);
-            }
+        foreach ($parametersToStrip as $parameter) {
+            $queryBag->remove($parameter);
         }
 
         $query       = http_build_query($queryBag->all());
