@@ -19,8 +19,11 @@ the client back to an URL with certain parameters stripped.
 ### Why not just create my own request listeners, and do what I want from there?
 
 You can of course still do this, and in some specific situations you might need that level of control.
+
 In my projects however, I've noticed that often I just need to execute some business logic and then redirect
 the user back to the url without that parameter.
 
 Furthermore, the intend of this bundle is to make it easy to have multiple services handle the same request
-and apply their own logic, instead of cluttering a single event listener with all kinds of different scenarios.
+and apply their own logic, instead of making multiple request-listeners with all kinds of different scenarios, each
+hooking into every request coming through your application! It also helps repeating code to check whether the request is
+using the GET-method, your parameter is available in the query string, etc.
