@@ -4,7 +4,6 @@ namespace CL\Bundle\TriggerBundle\EventListener;
 
 use CL\Bundle\TriggerBundle\Util\ParameterHandlerRegistry;
 use CL\Bundle\TriggerBundle\Util\RedirectHelper;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class ParameterListener
@@ -45,6 +44,7 @@ class ParameterListener
         }
 
         if ($event->getResponse()) {
+            // fasten the response
             $event->stopPropagation();
         }
     }
@@ -54,8 +54,10 @@ class ParameterListener
      */
     private function tryParameterBagHandlers(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
         foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
-            $response = $handler->onTrigger($event->getRequest()->query, $this->createRedirectHelper($event->getRequest()));
+            $redirectHelper = new RedirectHelper($request);
+            $response       = $handler->onTrigger($request->query, $redirectHelper);
 
             if ($response !== null) {
                 $event->setResponse($response);
@@ -70,9 +72,11 @@ class ParameterListener
      */
     private function tryParameterHandlers(GetResponseEvent $event)
     {
-        foreach ($event->getRequest()->query->all() as $key => $value) {
+        $request = $event->getRequest();
+        foreach ($request->query->all() as $key => $value) {
             foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
-                $response = $handler->onTrigger($value, $this->createRedirectHelper($event->getRequest(), [$key]));
+                $redirectHelper = new RedirectHelper($request, [$key]);
+                $response       = $handler->onTrigger($value, $redirectHelper);
 
                 if ($response !== null) {
                     $event->setResponse($response);
@@ -81,16 +85,5 @@ class ParameterListener
                 }
             }
         }
-    }
-
-    /**
-     * @param Request $request
-     * @param array   $strippableParameters
-     *
-     * @return RedirectHelper
-     */
-    private function createRedirectHelper(Request $request, array $strippableParameters = [])
-    {
-        return new RedirectHelper($request, $strippableParameters);
     }
 }

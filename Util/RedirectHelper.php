@@ -28,20 +28,19 @@ class RedirectHelper
     }
 
     /**
-     * @param array|null $parametersToStrip The parameters to strip from the redirect URL,
-     *                                      leave null to strip parameter(s) configured during construction
-     *
      * @return RedirectResponse
      */
-    public function create(array $parametersToStrip = null)
+    public function create()
     {
-        if ($parametersToStrip === null) {
-            $parametersToStrip = $this->parametersToStrip;
-        }
+        return new RedirectResponse($this->getUrl());
+    }
 
-        $redirect = new RedirectResponse($this->getUrl($parametersToStrip));
-
-        return $redirect;
+    /**
+     * @return RedirectResponse
+     */
+    public function createWithoutParameter()
+    {
+        return new RedirectResponse($this->getUrl($this->parametersToStrip));
     }
 
     /**
