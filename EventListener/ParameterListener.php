@@ -45,7 +45,6 @@ class ParameterListener
 
                 if ($response !== null) {
                     $event->setResponse($response);
-                    $event->stopPropagation();
 
                     return;
                 }
@@ -67,6 +66,6 @@ class ParameterListener
 
         $redirectHelper = new RedirectHelper($request, [$parameter]);
 
-        return $handler->{$method}($value, $redirectHelper);
+        return call_user_func_array([$handler, $method], [$value, $redirectHelper]);
     }
 }

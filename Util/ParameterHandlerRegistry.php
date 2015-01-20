@@ -18,14 +18,14 @@ class ParameterHandlerRegistry
     {
         if (!is_object($handler)) {
             throw new \InvalidArgumentException(sprintf(
-                'Parameter handler must be an object, got: %s',
+                'The given parameter handler must be an object, got: %s',
                 gettype($handler)
             ));
         }
 
         if (!method_exists($handler, $method)) {
             throw new \InvalidArgumentException(sprintf(
-                'The parameter handler (%s) does not have the method: %s',
+                'The given parameter handler (%s) does not have that method: %s',
                 get_class($handler),
                 $method
             ));
