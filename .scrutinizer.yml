@@ -4,6 +4,7 @@ filter:
   excluded_paths:
     - 'CLTriggerBundle.php'
     - 'DependencyInjection/*'
+    - 'Test/*'
     - 'Tests/*'
 
 before_commands:
