@@ -1,6 +1,10 @@
 # Usage
 
-## Handling a single parameter
+- [Handling a single parameter](#handling-a-single-parameter)
+- [Handling a parameter and redirecting to an URL without the parameter](#handling-a-parameter-and-redirecting-to-url-without-the-parameter)
+
+
+### Handling a single parameter
 
 Let's say you want to execute some business logic whenever someone visits your site with the GET-parameter `foobar=1`.
 
@@ -76,13 +80,13 @@ services:
 ```
 
 
-## Handling a parameter and redirecting to URL without the parameter
+### Handling a parameter and redirecting to an URL without the parameter
 
 In the example above, we simply just did a check on the parameter's value, and then executed whatever business logic we wanted.
 
 However, you might want this parameter to be removed from the URL directly after executing your logic; this is where the `RedirectHelper` comes in handy.
 
-Let's review the `doTrigger()`-method mentioned above again, only this time; we use the `RedirectHelper` to send a
+Let's review the `onFoo()`-method mentioned above again, only this time; we use the `RedirectHelper` to send a
 redirect to the current request's URL; it automatically strips the parameter that triggered your service:
 
 ```php
@@ -90,7 +94,7 @@ redirect to the current request's URL; it automatically strips the parameter tha
 /**
  * {@inheritdoc}
  */
-public function doTrigger($value, RedirectHelper $redirectHelper)
+public function onFoo($value, RedirectHelper $redirectHelper)
 {
     if ($value === '1') {
         // do something awesome...
@@ -116,7 +120,7 @@ parameter by just using the `create()` method, instead of the `createWithoutPara
 /**
  * {@inheritdoc}
  */
-public function doTrigger($value, RedirectHelper $redirectHelper)
+public function onFoo($value, RedirectHelper $redirectHelper)
 {
     if ($value === '1') {
         // do something awesome...
