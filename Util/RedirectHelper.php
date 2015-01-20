@@ -32,7 +32,7 @@ class RedirectHelper
      */
     public function create()
     {
-        return new RedirectResponse($this->getUrl());
+        return new RedirectResponse($this->getUrl([]));
     }
 
     /**
@@ -44,9 +44,11 @@ class RedirectHelper
     }
 
     /**
+     * @param array $parametersToStrip
+     *
      * @return string
      */
-    private function getUrl()
+    private function getUrl(array $parametersToStrip)
     {
         $path          = ltrim($this->request->getPathInfo(), '/');
         $schemeAndHost = $this->request->getSchemeAndHttpHost();
@@ -55,7 +57,7 @@ class RedirectHelper
         if ($this->request->isMethod('GET') && $this->request->query->count() > 0) {
             $query = $this->request->query->all();
 
-            foreach ($this->parametersToStrip as $parameter) {
+            foreach ($parametersToStrip as $parameter) {
                 unset($query[$parameter]);
             }
 

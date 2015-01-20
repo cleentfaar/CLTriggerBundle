@@ -39,9 +39,19 @@ class ParameterListener
             return;
         }
 
-        foreach ($request->query->all() as $key => $value) {
-            foreach ($this->parameterHandlerRegistry->getHandlers($key) as $handlerData) {
-                $response = $this->executeHandler($request, $handlerData, $key, $value);
+        $this->processHandlers($request, $event);
+    }
+
+    /**
+     * @param Request          $request
+     * @param GetResponseEvent $event
+     */
+    private function processHandlers(Request $request, GetResponseEvent $event)
+    {
+        foreach ($request->query->all() as $parameter => $value) {
+            foreach ($this->parameterHandlerRegistry->getHandlers($parameter) as $handlerData) {
+                $redirectHelper = new RedirectHelper($request, [$parameter]);
+                $response       = $this->executeHandler($redirectHelper, $handlerData, $value);
 
                 if ($response !== null) {
                     $event->setResponse($response);
@@ -53,18 +63,15 @@ class ParameterListener
     }
 
     /**
-     * @param Request $request
-     * @param array   $handlerData
-     * @param string  $parameter
-     * @param string  $value
+     * @param RedirectHelper $redirectHelper
+     * @param array          $handlerData
+     * @param string         $value
      *
      * @return Response|null
      */
-    private function executeHandler(Request $request, array $handlerData, $parameter, $value)
+    private function executeHandler(RedirectHelper $redirectHelper, array $handlerData, $value)
     {
         list($handler, $method) = $handlerData;
-
-        $redirectHelper = new RedirectHelper($request, [$parameter]);
 
         return call_user_func_array([$handler, $method], [$value, $redirectHelper]);
     }
