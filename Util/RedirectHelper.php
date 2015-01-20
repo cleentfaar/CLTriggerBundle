@@ -54,9 +54,7 @@ class RedirectHelper
      */
     private function getUrl($parameterToStrip = null)
     {
-        $path          = ltrim($this->request->getPathInfo(), '/');
-        $schemeAndHost = $this->request->getSchemeAndHttpHost();
-        $queryString   = '';
+        $pathAndQueryString = $this->request->getPathInfo();
 
         if ($this->request->isMethod('GET') && $this->request->query->count() > 0) {
             $query = $this->request->query->all();
@@ -65,11 +63,9 @@ class RedirectHelper
                 unset($query[$parameterToStrip]);
             }
 
-            $queryString = '?' . http_build_query($query);
+            $pathAndQueryString .= '?' . http_build_query($query);
         }
 
-        $redirectUrl = sprintf('%s/%s%s', $schemeAndHost, $path, $queryString);
-
-        return $redirectUrl;
+        return $this->request->getSchemeAndHttpHost() . $pathAndQueryString;
     }
 }
