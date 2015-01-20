@@ -2,53 +2,45 @@
 
 namespace CL\Bundle\TriggerBundle\Util;
 
-use CL\Bundle\TriggerBundle\Spec\ParameterBagHandlerInterface;
-use CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface;
-
 class ParameterHandlerRegistry
 {
     /**
-     * @var [ParameterHandlerInterface[]]
+     * @var array
      */
     private $parameterHandlers = [];
 
     /**
-     * @var ParameterBagHandlerInterface[]
-     */
-    private $parameterBagHandlers = [];
-
-    /**
-     * @param ParameterHandlerInterface $handler
-     * @param string                    $parameter
-     */
-    public function registerParameterHandler(ParameterHandlerInterface $handler, $parameter)
-    {
-        $this->parameterHandlers[$parameter][] = $handler;
-    }
-
-    /**
-     * @param ParameterBagHandlerInterface $handler
-     */
-    public function registerParameterBagHandler(ParameterBagHandlerInterface $handler)
-    {
-        $this->parameterBagHandlers[] = $handler;
-    }
-
-    /**
+     * @param object $handler
+     * @param string $method
      * @param string $parameter
-     *
-     * @return ParameterHandlerInterface[]
      */
-    public function getParameterHandlers($parameter)
+    public function register($handler, $method, $parameter)
+    {
+        if (!is_object($handler)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Parameter handler must be an object, got: %s',
+                gettype($handler)
+            ));
+        }
+
+        if (!method_exists($handler, $method)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The parameter handler (%s) does not have the method: %s',
+                get_class($handler),
+                $method
+            ));
+        }
+
+        $this->parameterHandlers[$parameter][] = [$handler, $method];
+    }
+
+    /**
+     * @param $parameter
+     *
+     * @return array
+     */
+    public function getHandlers($parameter)
     {
         return array_key_exists($parameter, $this->parameterHandlers) ? $this->parameterHandlers[$parameter] : [];
-    }
-
-    /**
-     * @return ParameterBagHandlerInterface[]
-     */
-    public function getParameterBagHandlers()
-    {
-        return $this->parameterBagHandlers;
     }
 }

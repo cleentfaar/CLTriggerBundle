@@ -32,6 +32,22 @@ class RedirectHelper
      */
     public function create()
     {
+        return new RedirectResponse($this->getUrl());
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    public function createWithoutParameter()
+    {
+        return new RedirectResponse($this->getUrl($this->parametersToStrip));
+    }
+
+    /**
+     * @return string
+     */
+    private function getUrl()
+    {
         $path        = ltrim($this->request->getPathInfo(), '/');
         $host        = $this->request->getHttpHost();
         $scheme      = $this->request->getScheme();
@@ -49,6 +65,6 @@ class RedirectHelper
 
         $redirectUrl = sprintf('%s://%s/%s%s', $scheme, $host, $path, $queryString);
 
-        return new RedirectResponse($redirectUrl);
+        return $redirectUrl;
     }
 }

@@ -2,11 +2,12 @@
 
 namespace CL\Bundle\TriggerBundle\Tests\Util;
 
+use CL\Bundle\TriggerBundle\Tests\AbstractTestCase;
 use CL\Bundle\TriggerBundle\Util\RedirectHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class RedirectHelperTest extends \PHPUnit_Framework_TestCase
+class RedirectHelperTest extends AbstractTestCase
 {
     private $expectedQuery = [
         'foo' => 'bar',

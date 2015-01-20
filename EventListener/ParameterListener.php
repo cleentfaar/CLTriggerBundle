@@ -37,11 +37,7 @@ class ParameterListener
             return;
         }
 
-        $this->tryParameterBagHandlers($event);
-
-        if ($event->getResponse() === null) {
-            $this->tryParameterHandlers($event);
-        }
+        $this->tryParameterHandlers($event);
 
         if ($event->getResponse()) {
             // fasten the response
@@ -52,35 +48,20 @@ class ParameterListener
     /**
      * @param GetResponseEvent $event
      */
-    private function tryParameterBagHandlers(GetResponseEvent $event)
-    {
-        $request = $event->getRequest();
-        foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
-            $response = $handler->onTrigger($request->query);
-
-            if ($response !== null) {
-                $event->setResponse($response);
-
-                break;
-            }
-        }
-    }
-
-    /**
-     * @param GetResponseEvent $event
-     */
     private function tryParameterHandlers(GetResponseEvent $event)
     {
         $request = $event->getRequest();
         foreach ($request->query->all() as $key => $value) {
-            foreach ($this->parameterHandlerRegistry->getParameterHandlers($key) as $handler) {
+            foreach ($this->parameterHandlerRegistry->getHandlers($key) as $handlerData) {
+                list($handler, $method) = $handlerData;
+
                 $redirectHelper = new RedirectHelper($request, [$key]);
-                $response       = $handler->onTrigger($value, $redirectHelper);
+                $response       = $handler->{$method}($value, $redirectHelper);
 
                 if ($response !== null) {
                     $event->setResponse($response);
 
-                    break 2;
+                    return;
                 }
             }
         }
