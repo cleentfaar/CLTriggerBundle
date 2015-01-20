@@ -8,38 +8,35 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RedirectHelperTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCreateFromRequest()
+    private $expectedQuery = [
+        'foo' => 'bar',
+    ];
+
+    public function testCreateFromRequestWithoutParameters()
     {
-        $redirect = $this->createRedirect(['foo' => 'bar']);
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
-
+        $redirect    = $this->createRedirect([]);
         $actualQuery = $this->getQueryFromRedirect($redirect);
 
         $this->assertArrayHasKey('foo', $actualQuery);
-        $this->assertEquals('bar', $actualQuery['foo']);
+        $this->assertEquals($this->expectedQuery['foo'], $actualQuery['foo']);
     }
 
-    public function testCreateFromRequestStripped()
+    public function testCreateFromRequestWithParameters()
     {
-        $redirect    = $this->createRedirect(['foo' => 'bar', 'apple' => 'pie'], ['apple']);
+        $redirect    = $this->createRedirect(['foo']);
         $actualQuery = $this->getQueryFromRedirect($redirect);
 
-        $this->assertArrayHasKey('foo', $actualQuery);
-        $this->assertEquals('bar', $actualQuery['foo']);
-
-        $this->assertArrayNotHasKey('apple', $actualQuery);
+        $this->assertArrayNotHasKey('foo', $actualQuery);
     }
 
     /**
-     * @param array $expectedQuery
      * @param array $withoutParameters
      *
      * @return RedirectResponse
      */
-    private function createRedirect(array $expectedQuery, array $withoutParameters = [])
+    private function createRedirect(array $withoutParameters)
     {
-        $request        = Request::create('/test', 'GET', $expectedQuery);
+        $request        = Request::create('/test', 'GET', $this->expectedQuery);
         $redirectHelper = new RedirectHelper($request, $withoutParameters);
         $redirect       = $redirectHelper->create();
 

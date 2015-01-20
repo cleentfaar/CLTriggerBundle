@@ -56,8 +56,7 @@ class ParameterListener
     {
         $request = $event->getRequest();
         foreach ($this->parameterHandlerRegistry->getParameterBagHandlers() as $handler) {
-            $redirectHelper = new RedirectHelper($request);
-            $response       = $handler->onTrigger($request->query, $redirectHelper);
+            $response = $handler->onTrigger($request->query);
 
             if ($response !== null) {
                 $event->setResponse($response);

@@ -32,37 +32,23 @@ class RedirectHelper
      */
     public function create()
     {
-        return new RedirectResponse($this->getUrl());
-    }
+        $path        = ltrim($this->request->getPathInfo(), '/');
+        $host        = $this->request->getHttpHost();
+        $scheme      = $this->request->getScheme();
+        $queryString = null;
 
-    /**
-     * @return RedirectResponse
-     */
-    public function createWithoutParameter()
-    {
-        return new RedirectResponse($this->getUrl($this->parametersToStrip));
-    }
+        if ($this->request->isMethod('GET') && $this->request->query->count() > 0) {
+            $query = $this->request->query->all();
 
-    /**
-     * @param array $parametersToStrip
-     *
-     * @return string
-     */
-    private function getUrl(array $parametersToStrip = [])
-    {
-        $path     = ltrim($this->request->getPathInfo(), '/');
-        $host     = $this->request->getHttpHost();
-        $scheme   = $this->request->getScheme();
-        $queryBag = clone($this->request->query);
+            foreach ($this->parametersToStrip as $parameter) {
+                unset($query[$parameter]);
+            }
 
-        foreach ($parametersToStrip as $parameter) {
-            $queryBag->remove($parameter);
+            $queryString = '?' . http_build_query($query);
         }
 
-        $query       = http_build_query($queryBag->all());
-        $redirectUrl = sprintf('%s://%s/%s?%s', $scheme, $host, $path, $query);
-        $redirectUrl = rtrim($redirectUrl, '?');
+        $redirectUrl = sprintf('%s://%s/%s%s', $scheme, $host, $path, $queryString);
 
-        return $redirectUrl;
+        return new RedirectResponse($redirectUrl);
     }
 }
