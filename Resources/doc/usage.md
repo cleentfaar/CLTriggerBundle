@@ -1,7 +1,7 @@
 # Usage
 
 - [Handling a single parameter](#handling-a-single-parameter)
-- [Handling a parameter and redirecting to an URL without the parameter](#handling-a-parameter-and-redirecting-to-url-without-the-parameter)
+- [Handling a parameter and redirecting to an URL without the parameter](#handling-a-parameter-and-redirecting-to-an-url-without-the-parameter)
 
 
 ### Handling a single parameter
