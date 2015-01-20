@@ -31,6 +31,13 @@ class ParameterHandlerRegistry
             ));
         }
 
+        if (!is_string($parameter)) {
+            throw new \InvalidArgumentException(sprintf(
+                'The parameter to trigger the handler must be a string, got: %s',
+                gettype($parameter)
+            ));
+        }
+
         $this->parameterHandlers[$parameter][] = [$handler, $method];
     }
 

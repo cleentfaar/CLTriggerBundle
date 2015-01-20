@@ -21,23 +21,28 @@ class RedirectHelperTest extends AbstractTestCase
 
     public function testCreateFromRequestWithParameters()
     {
-        $redirect    = $this->createRedirect(['foo' => 'bar'], ['foo']);
+        $redirect    = $this->createRedirect(['foo' => 'bar'], 'foo');
         $actualQuery = $this->getQueryFromRedirect($redirect);
 
         $this->assertArrayNotHasKey('foo', $actualQuery);
     }
 
     /**
-     * @param array $currentQuery
-     * @param array $withoutParameters
+     * @param array       $currentQuery
+     * @param string|null $withoutParameter
      *
      * @return RedirectResponse
      */
-    private function createRedirect(array $currentQuery, array $withoutParameters = [])
+    private function createRedirect(array $currentQuery, $withoutParameter = null)
     {
         $request        = Request::create('/test', 'GET', $currentQuery);
-        $redirectHelper = new RedirectHelper($request, $withoutParameters);
-        $redirect       = $redirectHelper->create();
+        $redirectHelper = new RedirectHelper($request, $withoutParameter);
+
+        if ($withoutParameter !== null) {
+            $redirect = $redirectHelper->createWithoutParameter();
+        } else {
+            $redirect = $redirectHelper->create();
+        }
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $redirect);
 

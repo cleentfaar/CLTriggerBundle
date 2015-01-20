@@ -13,8 +13,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ParameterListenerTest extends AbstractTestCase
 {
-    const BASE_URI = '/test';
-
     /**
      * @var ParameterListener
      */
@@ -42,7 +40,7 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithNonGetMethod()
     {
-        $this->getHandlerMock('foo', self::BASE_URI, $this->parameterHandlerRegistry);
+        $this->getHandlerMock('foo', parent::BASE_URI, $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent([], Request::METHOD_POST);
 
@@ -55,7 +53,7 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithMatchingParameterHandler()
     {
-        $this->getHandlerMock('foo', self::BASE_URI, $this->parameterHandlerRegistry);
+        $this->getHandlerMock('foo', parent::BASE_URI, $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent(['foo' => 'bar']);
 
@@ -65,12 +63,12 @@ class ParameterListenerTest extends AbstractTestCase
         $response = $event->getResponse();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertEquals(self::BASE_URI, $response->getTargetUrl());
+        $this->assertEquals(parent::BASE_URI, $response->getTargetUrl());
     }
 
     public function testOnRequestWithoutMatchingParameterHandler()
     {
-        $this->getHandlerMock('foo', self::BASE_URI, $this->parameterHandlerRegistry);
+        $this->getHandlerMock('foo', parent::BASE_URI, $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent(['apple' => 'pie']);
 
@@ -83,8 +81,8 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithMultipleMatchingParameterHandlers()
     {
-        $this->getHandlerMock('foo', self::BASE_URI . '?apple=pie', $this->parameterHandlerRegistry);
-        $this->getHandlerMock('apple', self::BASE_URI . '?foo=bar', $this->parameterHandlerRegistry);
+        $this->getHandlerMock('foo', parent::BASE_URI . '?apple=pie', $this->parameterHandlerRegistry);
+        $this->getHandlerMock('apple', parent::BASE_URI . '?foo=bar', $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent(['foo' => 'bar', 'apple' => 'pie']);
 
@@ -94,7 +92,7 @@ class ParameterListenerTest extends AbstractTestCase
         $response = $event->getResponse();
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $response);
-        $this->assertEquals(self::BASE_URI . '?apple=pie', $response->getTargetUrl());
+        $this->assertEquals(parent::BASE_URI . '?apple=pie', $response->getTargetUrl());
     }
 
     /**
@@ -107,7 +105,7 @@ class ParameterListenerTest extends AbstractTestCase
     {
         /** @var HttpKernelInterface|\PHPUnit_Framework_MockObject_MockObject $kernel */
         $kernel  = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
-        $request = Request::create(self::BASE_URI, $method, $query);
+        $request = Request::create(parent::BASE_URI, $method, $query);
         $event   = new GetResponseEvent($kernel, $request, $requestType);
 
         return $event;

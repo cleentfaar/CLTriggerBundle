@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
 {
+    const BASE_URI = '/test';
+
     /**
      * @param string                        $parameter
      * @param string|null                   $redirectUrl

@@ -13,18 +13,22 @@ class RedirectHelper
     private $request;
 
     /**
-     * @var array
+     * @var string|null
      */
-    private $parametersToStrip;
+    private $parameterToStrip;
 
     /**
-     * @param Request $request
-     * @param array   $parametersToStrip
+     * @param Request     $request
+     * @param string|null $parameterToStrip
      */
-    public function __construct(Request $request, array $parametersToStrip = [])
+    public function __construct(Request $request, $parameterToStrip = null)
     {
-        $this->request           = $request;
-        $this->parametersToStrip = $parametersToStrip;
+        if (!is_string($parameterToStrip) && !is_null($parameterToStrip)) {
+            throw new \InvalidArgumentException('Parameter to strip must be either a string or null (strip nothing)');
+        }
+
+        $this->request          = $request;
+        $this->parameterToStrip = $parameterToStrip;
     }
 
     /**
@@ -32,7 +36,7 @@ class RedirectHelper
      */
     public function create()
     {
-        return new RedirectResponse($this->getUrl([]));
+        return new RedirectResponse($this->getUrl());
     }
 
     /**
@@ -40,15 +44,15 @@ class RedirectHelper
      */
     public function createWithoutParameter()
     {
-        return new RedirectResponse($this->getUrl($this->parametersToStrip));
+        return new RedirectResponse($this->getUrl($this->parameterToStrip));
     }
 
     /**
-     * @param array $parametersToStrip
+     * @param string|null $parameterToStrip
      *
      * @return string
      */
-    private function getUrl(array $parametersToStrip)
+    private function getUrl($parameterToStrip = null)
     {
         $path          = ltrim($this->request->getPathInfo(), '/');
         $schemeAndHost = $this->request->getSchemeAndHttpHost();
@@ -57,8 +61,8 @@ class RedirectHelper
         if ($this->request->isMethod('GET') && $this->request->query->count() > 0) {
             $query = $this->request->query->all();
 
-            foreach ($parametersToStrip as $parameter) {
-                unset($query[$parameter]);
+            if ($parameterToStrip !== null) {
+                unset($query[$parameterToStrip]);
             }
 
             $queryString = '?' . http_build_query($query);
