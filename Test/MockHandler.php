@@ -13,6 +13,6 @@ class MockHandler
 
     public function onApple($value, RedirectHelper $redirectHelper)
     {
-        // do something foo-ey!
+        // do something apple-ish!
     }
 }

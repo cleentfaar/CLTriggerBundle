@@ -48,10 +48,9 @@ class RedirectHelper
      */
     private function getUrl()
     {
-        $path        = ltrim($this->request->getPathInfo(), '/');
-        $host        = $this->request->getHttpHost();
-        $scheme      = $this->request->getScheme();
-        $queryString = null;
+        $path          = ltrim($this->request->getPathInfo(), '/');
+        $schemeAndHost = $this->request->getSchemeAndHttpHost();
+        $queryString   = '';
 
         if ($this->request->isMethod('GET') && $this->request->query->count() > 0) {
             $query = $this->request->query->all();
@@ -63,7 +62,7 @@ class RedirectHelper
             $queryString = '?' . http_build_query($query);
         }
 
-        $redirectUrl = sprintf('%s://%s/%s%s', $scheme, $host, $path, $queryString);
+        $redirectUrl = sprintf('%s/%s%s', $schemeAndHost, $path, $queryString);
 
         return $redirectUrl;
     }
