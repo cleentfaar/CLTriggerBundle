@@ -8,13 +8,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @param ParameterHandlerRegistry $parameterHandlerRegistry
-     * @param string                   $parameter
-     * @param string|null              $redirectUrl
+     * @param string                        $parameter
+     * @param string|null                   $redirectUrl
+     * @param ParameterHandlerRegistry|null $parameterHandlerRegistry
      *
      * @return object
      */
-    protected function getHandlerMock(ParameterHandlerRegistry $parameterHandlerRegistry, $parameter = 'foo', $redirectUrl = null)
+    protected function getHandlerMock($parameter = 'foo', $redirectUrl = null, ParameterHandlerRegistry $parameterHandlerRegistry = null)
     {
         $parameterHandlerMock = $this->getMock('CL\Bundle\TriggerBundle\Test\MockHandler');
         $method               = 'on' . ucfirst($parameter);
@@ -23,7 +23,9 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
             $parameterHandlerMock->expects($this->any())->method($method)->willReturn(new RedirectResponse($redirectUrl));
         }
 
-        $parameterHandlerRegistry->register($parameterHandlerMock, $method, $parameter);
+        if ($parameterHandlerRegistry !== null) {
+            $parameterHandlerRegistry->register($parameterHandlerMock, $method, $parameter);
+        }
 
         return $parameterHandlerMock;
     }

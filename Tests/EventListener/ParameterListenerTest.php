@@ -42,7 +42,7 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithNonGetMethod()
     {
-        $this->getHandlerMock($this->parameterHandlerRegistry, 'foo', self::BASE_URI);
+        $this->getHandlerMock('foo', self::BASE_URI, $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent([], Request::METHOD_POST);
 
@@ -55,7 +55,7 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithMatchingParameterHandler()
     {
-        $this->getHandlerMock($this->parameterHandlerRegistry, 'foo', self::BASE_URI);
+        $this->getHandlerMock('foo', self::BASE_URI, $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent(['foo' => 'bar']);
 
@@ -70,7 +70,7 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithoutMatchingParameterHandler()
     {
-        $this->getHandlerMock($this->parameterHandlerRegistry, 'foo', self::BASE_URI);
+        $this->getHandlerMock('foo', self::BASE_URI, $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent(['apple' => 'pie']);
 
@@ -83,8 +83,8 @@ class ParameterListenerTest extends AbstractTestCase
 
     public function testOnRequestWithMultipleMatchingParameterHandlers()
     {
-        $this->getHandlerMock($this->parameterHandlerRegistry, 'foo', self::BASE_URI . '?apple=pie');
-        $this->getHandlerMock($this->parameterHandlerRegistry, 'apple', self::BASE_URI . '?foo=bar');
+        $this->getHandlerMock('foo', self::BASE_URI . '?apple=pie', $this->parameterHandlerRegistry);
+        $this->getHandlerMock('apple', self::BASE_URI . '?foo=bar', $this->parameterHandlerRegistry);
 
         $event = $this->createGetResponseEvent(['foo' => 'bar', 'apple' => 'pie']);
 

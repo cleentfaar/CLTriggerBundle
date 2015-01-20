@@ -21,7 +21,9 @@ class ParameterHandlerRegistryTest extends AbstractTestCase
     {
         $parameter        = 'foo';
         $method           = 'onFoo';
-        $parameterHandler = $this->getHandlerMock($this->parameterHandlerRegistry, $parameter);
+        $parameterHandler = $this->getHandlerMock($parameter);
+
+        $this->parameterHandlerRegistry->register($parameterHandler, $method, $parameter);
 
         $this->assertContains([$parameterHandler, $method], $this->parameterHandlerRegistry->getHandlers($parameter));
     }
