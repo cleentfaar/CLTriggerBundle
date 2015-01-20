@@ -25,5 +25,5 @@ the user back to the url without that parameter.
 
 Furthermore, the intend of this bundle is to make it easy to have multiple services handle the same request
 and apply their own logic, instead of making multiple request-listeners with all kinds of different scenarios, each
-hooking into every request coming through your application! It also helps repeating code to check whether the request is
-using the GET-method, your parameter is available in the query string, etc.
+hooking into every request coming through your application! It also helps to prevent repeating code to check whether;
+the request is using the GET-method, your parameter is available in the query string, etc.

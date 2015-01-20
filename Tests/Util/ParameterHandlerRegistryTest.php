@@ -57,4 +57,19 @@ class ParameterHandlerRegistryTest extends AbstractTestCase
 
         $this->assertContains([$parameterHandler, $method], $this->parameterHandlerRegistry->getHandlers($parameter));
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The parameter to trigger the handler must be a string, got: array
+     */
+    public function testRegisterNonStringParameter()
+    {
+        $parameter        = 'nonstring';
+        $method           = 'onFoo';
+        $parameterHandler = $this->getHandlerMock($parameter);
+
+        $this->parameterHandlerRegistry->register($parameterHandler, $method, [$parameter]);
+
+        $this->assertContains([$parameterHandler, $method], $this->parameterHandlerRegistry->getHandlers($parameter));
+    }
 }
