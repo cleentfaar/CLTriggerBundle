@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RedirectHelperTest extends AbstractTestCase
 {
-    public function testCreateFromRequestWithoutParameters()
+    public function testCreateFromRequestWithoutParameter()
     {
         $currentQuery = ['foo' => 'bar'];
         $redirect     = $this->createRedirect($currentQuery);
@@ -19,9 +19,21 @@ class RedirectHelperTest extends AbstractTestCase
         $this->assertEquals($currentQuery['foo'], $actualQuery['foo']);
     }
 
-    public function testCreateFromRequestWithParameters()
+    public function testCreateFromRequestWithParameter()
     {
         $redirect    = $this->createRedirect(['foo' => 'bar'], 'foo');
+        $actualQuery = $this->getQueryFromRedirect($redirect);
+
+        $this->assertArrayNotHasKey('foo', $actualQuery);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Parameter to strip must be either a non-empty string or null (strip nothing), got: array
+     */
+    public function testCreateFromRequestWithNonStringParameter()
+    {
+        $redirect    = $this->createRedirect(['foo' => 'bar'], ['nonstring']);
         $actualQuery = $this->getQueryFromRedirect($redirect);
 
         $this->assertArrayNotHasKey('foo', $actualQuery);

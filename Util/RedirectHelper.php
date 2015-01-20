@@ -23,8 +23,11 @@ class RedirectHelper
      */
     public function __construct(Request $request, $parameterToStrip = null)
     {
-        if (!is_string($parameterToStrip) && !is_null($parameterToStrip)) {
-            throw new \InvalidArgumentException('Parameter to strip must be either a string or null (strip nothing)');
+        if (!is_string($parameterToStrip) && !is_null($parameterToStrip) && !empty($parameterToStrip)) {
+            throw new \InvalidArgumentException(sprintf(
+                'Parameter to strip must be either a non-empty string or null (strip nothing), got: %s',
+                gettype($parameterToStrip)
+            ));
         }
 
         $this->request          = $request;
