@@ -15,10 +15,7 @@ First, create a service that will handle the parameter for your scenario
 
 namespace AppBundle\EventListener;
 
-use CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
-
-class ParameterHandler extends ParameterHandlerInterface
+class ParameterHandler
 {
     /**
      * {@inheritdoc}
