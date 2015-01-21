@@ -1,6 +1,6 @@
 <?php
 
-namespace CL\Bundle\TriggerBundle\Tests;
+namespace CL\Bundle\TriggerBundle\Tests\DependencyInjection;
 
 use CL\Bundle\TriggerBundle\DependencyInjection\CLTriggerExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;

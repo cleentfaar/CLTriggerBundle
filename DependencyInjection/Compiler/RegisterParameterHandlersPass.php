@@ -10,7 +10,13 @@ class RegisterParameterHandlersPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition         = $container->getDefinition('cl_trigger.util.parameter_handler_registry');
+        $registryId = 'cl_trigger.util.parameter_handler_registry';
+
+        if (!$container->hasDefinition($registryId)) {
+            return;
+        }
+
+        $definition         = $container->findDefinition($registryId);
         $tag                = 'cl_trigger.parameter_handler';
         $requiredAttributes = ['parameter', 'method'];
 
