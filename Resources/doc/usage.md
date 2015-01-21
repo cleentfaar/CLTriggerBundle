@@ -13,12 +13,12 @@ First, create a service that will handle the parameter for your scenario
 ```php
 <?php
 
-namespace CL\Bundle\DemoBundle\EventListener;
+namespace AppBundle\EventListener;
 
 use CL\Bundle\TriggerBundle\Spec\ParameterHandlerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-class AcmeParameterHandler extends ParameterHandlerInterface
+class ParameterHandler extends ParameterHandlerInterface
 {
     /**
      * {@inheritdoc}
@@ -37,7 +37,7 @@ Now you just need to register this service (exact location depends on your setup
 # app/config/services.yml
 services:
   app.parameter_handler:
-    class: AppBundle\EventListener\AcmeParameterHandler
+    class: AppBundle\EventListener\ParameterHandler
     tags:
       - { name: cl_trigger.parameter_handler, parameter: foobar, method: onFoo }
 ```
