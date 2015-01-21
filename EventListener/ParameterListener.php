@@ -50,7 +50,7 @@ class ParameterListener
     {
         foreach ($request->query->all() as $parameter => $value) {
             foreach ($this->parameterHandlerRegistry->getHandlers($parameter) as $handlerData) {
-                $redirectHelper = new RedirectHelper($request, $parameter);
+                $redirectHelper = RedirectHelper::createFromRequest($request, $parameter);
                 $response       = $this->executeHandler($redirectHelper, $handlerData, $value);
 
                 if ($response !== null) {

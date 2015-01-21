@@ -96,8 +96,8 @@ class ParameterListenerTest extends AbstractTestCase
     }
 
     /**
-     * @param array  $query
-     * @param string $method
+     * @param array $query
+     * @param int   $requestType
      *
      * @return GetResponseEvent
      */
@@ -105,7 +105,7 @@ class ParameterListenerTest extends AbstractTestCase
     {
         /** @var HttpKernelInterface|\PHPUnit_Framework_MockObject_MockObject $kernel */
         $kernel  = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
-        $request = Request::create(parent::BASE_URI, $method, $query);
+        $request = $this->createRequest($method, $query);
         $event   = new GetResponseEvent($kernel, $request, $requestType);
 
         return $event;

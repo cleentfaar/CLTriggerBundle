@@ -5,11 +5,18 @@ namespace CL\Bundle\TriggerBundle\Tests\Util;
 use CL\Bundle\TriggerBundle\Tests\AbstractTestCase;
 use CL\Bundle\TriggerBundle\Util\RedirectHelper;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class RedirectHelperTest extends AbstractTestCase
 {
-    public function testCreateFromRequestWithoutParameter()
+    public function testCreate()
+    {
+        $redirect    = $this->createRedirect(['foo' => 'bar'], 'foo');
+        $actualQuery = $this->getQueryFromRedirect($redirect);
+
+        $this->assertArrayNotHasKey('foo', $actualQuery);
+    }
+
+    public function testCreateWithoutParameter()
     {
         $currentQuery = ['foo' => 'bar'];
         $redirect     = $this->createRedirect($currentQuery);
@@ -19,12 +26,11 @@ class RedirectHelperTest extends AbstractTestCase
         $this->assertEquals($currentQuery['foo'], $actualQuery['foo']);
     }
 
-    public function testCreateFromRequestWithParameter()
+    public function testCreateFromRequest()
     {
-        $redirect    = $this->createRedirect(['foo' => 'bar'], 'foo');
-        $actualQuery = $this->getQueryFromRedirect($redirect);
+        $redirectHelper = RedirectHelper::createFromRequest($this->createGetRequest());
 
-        $this->assertArrayNotHasKey('foo', $actualQuery);
+        $this->assertInstanceOf('CL\Bundle\TriggerBundle\Util\RedirectHelper', $redirectHelper);
     }
 
     /**
@@ -47,8 +53,8 @@ class RedirectHelperTest extends AbstractTestCase
      */
     private function createRedirect(array $currentQuery, $withoutParameter = null)
     {
-        $request        = Request::create('/test', 'GET', $currentQuery);
-        $redirectHelper = new RedirectHelper($request, $withoutParameter);
+        $request        = $this->createGetRequest($currentQuery);
+        $redirectHelper = RedirectHelper::createFromRequest($request, $withoutParameter);
 
         if ($withoutParameter !== null) {
             $redirect = $redirectHelper->createWithoutParameter();

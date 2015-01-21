@@ -4,6 +4,7 @@ namespace CL\Bundle\TriggerBundle\Tests;
 
 use CL\Bundle\TriggerBundle\Util\ParameterHandlerRegistry;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
 {
@@ -30,5 +31,34 @@ abstract class AbstractTestCase extends \PHPUnit_Framework_TestCase
         }
 
         return $parameterHandlerMock;
+    }
+
+    /**
+     * @param       $method
+     * @param array $data
+     * @param       $uri
+     *
+     * @return Request
+     */
+    protected function createRequest($method = Request::METHOD_GET, array $data, $uri = self::BASE_URI)
+    {
+        return Request::create($uri, $method, $data);
+    }
+
+    /**
+     * @param array  $query
+     * @param string $uri
+     *
+     * @return Request
+     */
+    protected function createGetRequest(array $query = null, $uri = self::BASE_URI)
+    {
+        if ($query === null) {
+            $request = $this->createRequest(Request::METHOD_GET, [], $uri);
+        } else {
+            $request = $this->createRequest(Request::METHOD_GET, $query, $uri);
+        }
+
+        return $request;
     }
 }
