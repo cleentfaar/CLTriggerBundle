@@ -33,9 +33,8 @@ class ParameterListener
         }
 
         $request  = $event->getRequest();
-        $response = $event->getResponse();
 
-        if ($response !== null || $request->isMethod('POST') || $request->query->count() < 1) {
+        if ($event->getResponse() !== null || !$request->isMethod('GET') || $request->query->count() < 1) {
             return;
         }
 
